@@ -2,11 +2,11 @@ spring:
   application:
     name: ${SPRING_APP_NAME:spring-security}
 
-  security:
-    user:
-      name: ${SPRING_SECURITY_USER_NAME:admin}
-      password: ${SPRING_SECURITY_USER_PASSWORD:123}
-      roles: ${SPRING_SECURITY_USER_ROLES:USER,ADMIN}
+#  security:
+#    user:
+#      name: ${SPRING_SECURITY_USER_NAME:admin}
+#      password: ${SPRING_SECURITY_USER_PASSWORD:123}
+#      roles: ${SPRING_SECURITY_USER_ROLES:USER,ADMIN}
 
 logging:
   level:
