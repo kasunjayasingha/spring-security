@@ -1,6 +1,19 @@
 spring:
   application:
     name: ${SPRING_APP_NAME:spring-security}
+  datasource:
+    url: jdbc:mysql://${DATABASE_HOST:localhost}:${DATABASE_PORT:3311}/${DATABASE_NAME:springsecurity}
+    username: ${DATABASE_USERNAME:root}
+    password: ${DATABASE_PASSWORD:root}
+  jpa:
+    show-sql: ${JPA_SHOW_SQL:true}
+    hibernate:
+      ddl-auto: ${JPA_HIBERNATE_DDL_AUTO:update}
+    properties:
+      hibernate.format_sql: ${HIBERNATE_FORMAT_SQL:true} # Format SQL queries for better readability
+  sql:
+    init:
+      mode: always
 
 #  security:
 #    user:
