@@ -39,7 +39,7 @@ public class ProjectSecurityConfig {
         return http.build();
     }
 
-    @Bean
+//    @Bean
     // This bean is used to create in-memory users for testing purposes
 //    public UserDetailsService userDetailsService() {
 //        UserDetails user = User.withUsername("user").password("{noop}Kasun@epic@12345").authorities("read").build();
@@ -49,9 +49,9 @@ public class ProjectSecurityConfig {
 //        return new InMemoryUserDetailsManager(user, admin);
 //    }
     // This bean is used to create users from a database using JDBC
-    public UserDetailsService userDetailsService(DataSource dataSource) {
-        return new JdbcUserDetailsManager(dataSource);
-    }
+//    public UserDetailsService userDetailsService(DataSource dataSource) {
+//        return new JdbcUserDetailsManager(dataSource);
+//    }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
