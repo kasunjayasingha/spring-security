@@ -1,4 +1,4 @@
-package com.kasunjay.springsecurity.service;
+package com.kasunjay.springsecurity.service.impl;
 
 import com.kasunjay.springsecurity.model.Customer;
 import com.kasunjay.springsecurity.repository.CustomerRepository;
