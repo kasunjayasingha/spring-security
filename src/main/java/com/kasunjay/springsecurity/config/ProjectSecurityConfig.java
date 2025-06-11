@@ -1,7 +1,11 @@
 package com.kasunjay.springsecurity.config;
 
+import com.kasunjay.springsecurity.exception.CustomAccessDeniedHandler;
+import com.kasunjay.springsecurity.exception.CustomBasicAuthenticationEntryPoint;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.password.CompromisedPasswordChecker;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.userdetails.User;
@@ -25,19 +29,29 @@ import static org.springframework.security.config.Customizer.withDefaults;
  * @Created on: 5/28/2025 at 11:56 PM
  */
 @Configuration
+@RequiredArgsConstructor
 public class ProjectSecurityConfig {
+
+    private final Environment environment;
 
     @Bean
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
         /*http.authorizeHttpRequests((requests) -> requests.anyRequest().permitAll());*/
         /*http.authorizeHttpRequests((requests) -> requests.anyRequest().denyAll());*/
+
+        // Only force HTTPS in production environment
+        if (environment.matchesProfiles("prod")) {
+            http.redirectToHttps(withDefaults()); // Force HTTPS in production
+        }
+
         http
                 .csrf(csrf -> csrf.disable()) // Disable CSRF for simplicity, not recommended for production
                 .authorizeHttpRequests((requests) -> requests
                 .requestMatchers("/myAccount", "/myBalance", "/myLoans", "/myCards").authenticated()
                 .requestMatchers("/notices", "/contact", "/error", "/register").permitAll());
         http.formLogin(withDefaults());
-        http.httpBasic(withDefaults());
+        http.httpBasic(hbc -> hbc.authenticationEntryPoint(new CustomBasicAuthenticationEntryPoint()));
+        http.exceptionHandling(ehc -> ehc.accessDeniedHandler(new CustomAccessDeniedHandler()));
         return http.build();
     }
 
