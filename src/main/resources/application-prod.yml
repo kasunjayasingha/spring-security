@@ -6,6 +6,11 @@ spring:
     properties:
       hibernate.format_sql: ${HIBERNATE_FORMAT_SQL:false}
 
+server:
+  servlet:
+    session:
+      timeout: ${SERVER_SERVLET_SESSION_TIMEOUT:10m} # Session timeout duration
+
 logging:
   level:
     org.springframework.security: ${SPRING_SECURITY_LOG_LEVEL:ERROR}

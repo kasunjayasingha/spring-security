@@ -25,6 +25,11 @@ spring:
 #      password: ${SPRING_SECURITY_USER_PASSWORD:123}
 #      roles: ${SPRING_SECURITY_USER_ROLES:USER,ADMIN}
 
+server:
+  servlet:
+    session:
+      timeout: ${SERVER_SERVLET_SESSION_TIMEOUT:20m} # Session timeout duration
+
 logging:
   level:
     org.springframework.security: ${SPRING_SECURITY_LOG_LEVEL:TRACE}

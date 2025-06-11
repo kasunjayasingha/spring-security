@@ -45,10 +45,13 @@ public class ProjectSecurityConfig {
         }
 
         http
+                .sessionManagement(smc -> smc
+                        .sessionFixation(sfc -> sfc.changeSessionId()) // Change session ID on login to prevent session fixation attacks
+                        .invalidSessionUrl("/invalidSession").maximumSessions(2).maxSessionsPreventsLogin(true)) // Redirect to login page on invalid session
                 .csrf(csrf -> csrf.disable()) // Disable CSRF for simplicity, not recommended for production
                 .authorizeHttpRequests((requests) -> requests
                 .requestMatchers("/myAccount", "/myBalance", "/myLoans", "/myCards").authenticated()
-                .requestMatchers("/notices", "/contact", "/error", "/register").permitAll());
+                .requestMatchers("/notices", "/contact", "/error", "/register", "/invalidSession").permitAll());
         http.formLogin(withDefaults());
         http.httpBasic(hbc -> hbc.authenticationEntryPoint(new CustomBasicAuthenticationEntryPoint()));
         http.exceptionHandling(ehc -> ehc.accessDeniedHandler(new CustomAccessDeniedHandler()));
