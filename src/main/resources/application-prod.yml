@@ -1,0 +1,18 @@
+spring:
+  jpa:
+    show-sql: ${JPA_SHOW_SQL:false}
+    hibernate:
+      ddl-auto: ${JPA_HIBERNATE_DDL_AUTO:none} # Set to 'none' to disable automatic schema generation
+    properties:
+      hibernate.format_sql: ${HIBERNATE_FORMAT_SQL:false}
+
+server:
+  servlet:
+    session:
+      timeout: ${SERVER_SERVLET_SESSION_TIMEOUT:10m} # Session timeout duration
+
+logging:
+  level:
+    org.springframework.security: ${SPRING_SECURITY_LOG_LEVEL:ERROR}
+  pattern:
+    console: ${LOGPATTERN_CONSOLE:%green(%d{HH:mm:ss.SSS}) %blue(%-5level) %red([%thread]) %yellow(%logger{15}) - %msg%n}
