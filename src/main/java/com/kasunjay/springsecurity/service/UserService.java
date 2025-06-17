@@ -12,4 +12,6 @@ import org.springframework.http.ResponseEntity;
 public interface UserService {
 
     ResponseEntity<String> registerUser(Customer customer);
+
+    Customer getUserDetails(String username);
 }

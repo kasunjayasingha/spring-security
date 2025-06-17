@@ -1,7 +1,13 @@
 package com.kasunjay.springsecurity.controller;
 
+import com.kasunjay.springsecurity.model.Loans;
+import com.kasunjay.springsecurity.service.LoanService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 /**
  * @Author: kasun
@@ -10,10 +16,13 @@ import org.springframework.web.bind.annotation.RestController;
  * @Created on: 5/27/2025 at 9:44 PM
  */
 @RestController
+@RequiredArgsConstructor
 public class LoansController {
 
+    private final LoanService loanService;
+
     @GetMapping("/myLoans")
-    public  String getLoansDetails () {
-        return "Here are the loans details from the DB";
+    public List<Loans> getLoansDetails (@RequestParam long id) {
+        return loanService.getLoansDetails(id);
     }
 }

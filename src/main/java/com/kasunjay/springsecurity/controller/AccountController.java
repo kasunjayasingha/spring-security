@@ -1,6 +1,10 @@
 package com.kasunjay.springsecurity.controller;
 
+import com.kasunjay.springsecurity.model.Accounts;
+import com.kasunjay.springsecurity.service.AccountService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -10,10 +14,13 @@ import org.springframework.web.bind.annotation.RestController;
  * @Created on: 5/27/2025 at 9:43 PM
  */
 @RestController
+@RequiredArgsConstructor
 public class AccountController {
 
+    private final AccountService accountService;
+
     @GetMapping("/myAccount")
-    public  String getAccountDetails () {
-        return "Here are the account details from the DB";
+    public Accounts getAccountDetails (@RequestParam long id) {
+        return accountService.getAccountDetails(id);
     }
 }
