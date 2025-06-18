@@ -35,7 +35,7 @@ public class CustomUsernamePwdAuthenticationProvider implements AuthenticationPr
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
         // Check if the prod profile is active
-        boolean isProdProfileActive = Arrays.asList(environment.getActiveProfiles()).contains("prod");
+        boolean isProdProfileActive = Arrays.asList(environment.getActiveProfiles()).contains("default");
 
         // Only check password if prod profile is active
         if (isProdProfileActive) {

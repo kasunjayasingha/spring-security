@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.password.CompromisedPasswordChecker;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -82,9 +83,8 @@ public class ProjectSecurityConfig {
         }
 
         http
-                .sessionManagement(smc -> smc
-                        .sessionFixation(sfc -> sfc.changeSessionId()) // Change session ID on login to prevent session fixation attacks
-                        .invalidSessionUrl("/invalidSession").maximumSessions(2).maxSessionsPreventsLogin(true)) // Redirect to login page on invalid session
+                .securityContext(contextConfig -> contextConfig.requireExplicitSave(false)) // Disable explicit save of SecurityContext
+                .sessionManagement(sessionConfig -> sessionConfig.sessionCreationPolicy(SessionCreationPolicy.ALWAYS)) // Always create a session
                 .csrf(csrfConfig -> csrfConfig.csrfTokenRequestHandler(csrfTokenRequestAttributeHandler)
                         .ignoringRequestMatchers( "/contact","/register")
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
