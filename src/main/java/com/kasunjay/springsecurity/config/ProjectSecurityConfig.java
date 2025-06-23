@@ -2,6 +2,8 @@ package com.kasunjay.springsecurity.config;
 
 import com.kasunjay.springsecurity.exception.CustomAccessDeniedHandler;
 import com.kasunjay.springsecurity.exception.CustomBasicAuthenticationEntryPoint;
+import com.kasunjay.springsecurity.filter.AuthoritiesLoggingAfterFilter;
+import com.kasunjay.springsecurity.filter.AuthoritiesLoggingAtFilter;
 import com.kasunjay.springsecurity.filter.CsrfCookieFilter;
 import com.kasunjay.springsecurity.filter.RequestValidationBeforeFilter;
 import jakarta.servlet.http.HttpServletRequest;
@@ -90,7 +92,9 @@ public class ProjectSecurityConfig {
                         .ignoringRequestMatchers("/contact", "/register")
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
                 .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
-                .addFilterBefore(new RequestValidationBeforeFilter(), BasicAuthenticationFilter.class)
+                .addFilterBefore(new RequestValidationBeforeFilter(), BasicAuthenticationFilter.class) // Custom filter to validate Authorization headers before authentication
+                .addFilterAfter(new AuthoritiesLoggingAfterFilter(), BasicAuthenticationFilter.class) // Custom filter to log authorities after authentication
+                .addFilterAt(new AuthoritiesLoggingAtFilter(), BasicAuthenticationFilter.class) // Custom filter to log authorities at the time of authentication
                 .authorizeHttpRequests((requests) -> requests
 //                        .requestMatchers("/myAccount").hasAuthority("VIEWACCOUNT")
 //                        .requestMatchers("/myBalance").hasAnyAuthority("VIEWBALANCE", "VIEWACCOUNT")
