@@ -2,10 +2,7 @@ package com.kasunjay.springsecurity.config;
 
 import com.kasunjay.springsecurity.exception.CustomAccessDeniedHandler;
 import com.kasunjay.springsecurity.exception.CustomBasicAuthenticationEntryPoint;
-import com.kasunjay.springsecurity.filter.AuthoritiesLoggingAfterFilter;
-import com.kasunjay.springsecurity.filter.AuthoritiesLoggingAtFilter;
-import com.kasunjay.springsecurity.filter.CsrfCookieFilter;
-import com.kasunjay.springsecurity.filter.RequestValidationBeforeFilter;
+import com.kasunjay.springsecurity.filter.*;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -31,6 +28,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 
 import javax.sql.DataSource;
 
+import java.util.Arrays;
 import java.util.Collections;
 
 import static org.springframework.security.config.Customizer.withDefaults;
@@ -65,6 +63,7 @@ public class ProjectSecurityConfig {
                     config.setAllowedMethods(Collections.singletonList("*")); // Allow all HTTP methods
                     config.setAllowCredentials(true); // Allow credentials (cookies, authorization headers, etc.)
                     config.setAllowedHeaders(Collections.singletonList("*")); // Allow all headers
+                    config.setExposedHeaders(Arrays.asList("Authorization")); // Expose Authorization header to the client
                     config.setMaxAge(3600L); // Cache preflight response for 1 hour, this used to reduce the number of preflight requests
                     return config;
                 }
@@ -78,6 +77,7 @@ public class ProjectSecurityConfig {
                     config.setAllowedMethods(Collections.singletonList("*")); // Allow all HTTP methods
                     config.setAllowCredentials(true); // Allow credentials (cookies, authorization headers, etc.)
                     config.setAllowedHeaders(Collections.singletonList("*")); // Allow all headers
+                    config.setExposedHeaders(Arrays.asList("Authorization")); // Expose Authorization header to the client
                     config.setMaxAge(3600L); // Cache preflight response for 1 hour, this used to reduce the number of preflight requests
                     return config;
                 }
@@ -86,8 +86,7 @@ public class ProjectSecurityConfig {
         }
 
         http
-                .securityContext(contextConfig -> contextConfig.requireExplicitSave(false)) // Disable explicit save of SecurityContext
-                .sessionManagement(sessionConfig -> sessionConfig.sessionCreationPolicy(SessionCreationPolicy.ALWAYS)) // Always create a session
+                .sessionManagement(sessionConfig -> sessionConfig.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Set session management to stateless (no sessions will be created or used by Spring Security)
                 .csrf(csrfConfig -> csrfConfig.csrfTokenRequestHandler(csrfTokenRequestAttributeHandler)
                         .ignoringRequestMatchers("/contact", "/register")
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
@@ -95,6 +94,8 @@ public class ProjectSecurityConfig {
                 .addFilterBefore(new RequestValidationBeforeFilter(), BasicAuthenticationFilter.class) // Custom filter to validate Authorization headers before authentication
                 .addFilterAfter(new AuthoritiesLoggingAfterFilter(), BasicAuthenticationFilter.class) // Custom filter to log authorities after authentication
                 .addFilterAt(new AuthoritiesLoggingAtFilter(), BasicAuthenticationFilter.class) // Custom filter to log authorities at the time of authentication
+                .addFilterAfter(new JWTTokenGeneratorFilter(), BasicAuthenticationFilter.class) // Custom filter to generate JWT tokens after authentication
+                .addFilterBefore(new JWTTokenValidatorFilter(), BasicAuthenticationFilter.class) // Custom filter to validate JWT tokens before authentication
                 .authorizeHttpRequests((requests) -> requests
 //                        .requestMatchers("/myAccount").hasAuthority("VIEWACCOUNT")
 //                        .requestMatchers("/myBalance").hasAnyAuthority("VIEWBALANCE", "VIEWACCOUNT")
@@ -112,19 +113,6 @@ public class ProjectSecurityConfig {
         return http.build();
     }
 
-//    @Bean
-    // This bean is used to create in-memory users for testing purposes
-//    public UserDetailsService userDetailsService() {
-//        UserDetails user = User.withUsername("user").password("{noop}Kasun@epic@12345").authorities("read").build();
-//        UserDetails admin = User.withUsername("admin")
-//                .password("{bcrypt}$2a$12$es3bRC4OlCzvwlc6nutEOOlTyGVxQEXu8Udt3Nt0oz9e73XdFlcsS") // Password: Kasun@epic@12345
-//                .authorities("admin").build();
-//        return new InMemoryUserDetailsManager(user, admin);
-//    }
-    // This bean is used to create users from a database using JDBC
-//    public UserDetailsService userDetailsService(DataSource dataSource) {
-//        return new JdbcUserDetailsManager(dataSource);
-//    }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
