@@ -8,16 +8,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.password.CompromisedPasswordChecker;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
-import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.password.HaveIBeenPwnedRestApiPasswordChecker;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
@@ -25,8 +23,6 @@ import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
-
-import javax.sql.DataSource;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -73,7 +69,7 @@ public class ProjectSecurityConfig {
                 @Override
                 public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
                     CorsConfiguration config = new CorsConfiguration();
-                    config.setAllowedOrigins(Collections.singletonList("http://localhost:4300")); // Allow requests from this origin
+                    config.setAllowedOrigins(Collections.singletonList("http://localhost:4200")); // Allow requests from this origin
                     config.setAllowedMethods(Collections.singletonList("*")); // Allow all HTTP methods
                     config.setAllowCredentials(true); // Allow credentials (cookies, authorization headers, etc.)
                     config.setAllowedHeaders(Collections.singletonList("*")); // Allow all headers
@@ -97,16 +93,16 @@ public class ProjectSecurityConfig {
                 .addFilterAfter(new JWTTokenGeneratorFilter(), BasicAuthenticationFilter.class) // Custom filter to generate JWT tokens after authentication
                 .addFilterBefore(new JWTTokenValidatorFilter(), BasicAuthenticationFilter.class) // Custom filter to validate JWT tokens before authentication
                 .authorizeHttpRequests((requests) -> requests
-//                        .requestMatchers("/myAccount").hasAuthority("VIEWACCOUNT")
-//                        .requestMatchers("/myBalance").hasAnyAuthority("VIEWBALANCE", "VIEWACCOUNT")
-//                        .requestMatchers("/myLoans").hasAuthority("VIEWLOANS")
-//                        .requestMatchers("/myCards").hasAuthority("VIEWCARDS")
-                        .requestMatchers("/myAccount").hasRole("USER")
-                        .requestMatchers("/myBalance").hasAnyRole("USER", "ADMIN")
-                        .requestMatchers("/myLoans").hasRole("USER")
-                        .requestMatchers("/myCards").hasRole("USER")
+                        .requestMatchers("/myAccount").hasAuthority("VIEWACCOUNT")
+                        .requestMatchers("/myBalance").hasAnyAuthority("VIEWBALANCE", "VIEWACCOUNT")
+                        .requestMatchers("/myLoans").hasAuthority("VIEWLOANS")
+                        .requestMatchers("/myCards").hasAuthority("VIEWCARDS")
+//                        .requestMatchers("/myAccount").hasRole("USER")
+//                        .requestMatchers("/myBalance").hasAnyRole("USER", "ADMIN")
+//                        .requestMatchers("/myLoans").hasRole("USER")
+//                        .requestMatchers("/myCards").hasRole("USER")
                         .requestMatchers("/user").authenticated()
-                        .requestMatchers("/notices", "/contact", "/error", "/register", "/invalidSession").permitAll());
+                        .requestMatchers("/notices", "/contact", "/error", "/register", "/invalidSession", "/apiLogin").permitAll());
         http.formLogin(withDefaults());
         http.httpBasic(hbc -> hbc.authenticationEntryPoint(new CustomBasicAuthenticationEntryPoint()));
         http.exceptionHandling(ehc -> ehc.accessDeniedHandler(new CustomAccessDeniedHandler()));
@@ -126,5 +122,16 @@ public class ProjectSecurityConfig {
     @Bean
     public CompromisedPasswordChecker compromisedPasswordChecker() {
         return new HaveIBeenPwnedRestApiPasswordChecker();
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(UserDetailsService userDetailsService,
+                                                       PasswordEncoder passwordEncoder) {
+        CustomUsernamePwdAuthenticationProvider authenticationProvider =
+                new CustomUsernamePwdAuthenticationProvider(userDetailsService, passwordEncoder,
+                        environment);
+        ProviderManager providerManager = new ProviderManager(authenticationProvider);
+        providerManager.setEraseCredentialsAfterAuthentication(false);
+        return  providerManager;
     }
 }

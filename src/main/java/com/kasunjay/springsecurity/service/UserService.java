@@ -1,6 +1,8 @@
 package com.kasunjay.springsecurity.service;
 
 import com.kasunjay.springsecurity.model.Customer;
+import com.kasunjay.springsecurity.model.LoginRequestDTO;
+import com.kasunjay.springsecurity.model.LoginResponseDTO;
 import org.springframework.http.ResponseEntity;
 
 /**
@@ -14,4 +16,6 @@ public interface UserService {
     ResponseEntity<String> registerUser(Customer customer);
 
     Customer getUserDetails(String username);
+
+    ResponseEntity<LoginResponseDTO> apiLogin(LoginRequestDTO loginRequest);
 }

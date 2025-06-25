@@ -1,6 +1,8 @@
 package com.kasunjay.springsecurity.controller;
 
 import com.kasunjay.springsecurity.model.Customer;
+import com.kasunjay.springsecurity.model.LoginRequestDTO;
+import com.kasunjay.springsecurity.model.LoginResponseDTO;
 import com.kasunjay.springsecurity.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -36,5 +38,10 @@ public class UserController {
             return null; // or throw an exception
         }
 
+    }
+
+    @PostMapping("/apiLogin")
+    public ResponseEntity<LoginResponseDTO> apiLogin (@RequestBody LoginRequestDTO loginRequest) {
+        return userService.apiLogin(loginRequest);
     }
 }

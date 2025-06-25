@@ -1,5 +1,6 @@
 package com.kasunjay.springsecurity.filter;
 
+import com.kasunjay.springsecurity.constants.ApplicationConstants;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -21,9 +22,6 @@ import java.util.Locale;
  */
 public class RequestValidationBeforeFilter implements Filter {
 
-    private static final String BASIC_PREFIX = "Basic ";
-    private static final String BEARER_PREFIX = "Bearer ";
-
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
@@ -37,10 +35,10 @@ public class RequestValidationBeforeFilter implements Filter {
             header = header.trim();
 
             try {
-                if (StringUtils.startsWithIgnoreCase(header, BASIC_PREFIX)) {
+                if (StringUtils.startsWithIgnoreCase(header, ApplicationConstants.BASIC_PREFIX)) {
                     validateBasicAuth(header, res);
-                } else if (StringUtils.startsWithIgnoreCase(header, BEARER_PREFIX)) {
-                    validateBearerToken(header, res);
+                } else if (StringUtils.startsWithIgnoreCase(header, ApplicationConstants.BEARER_PREFIX)) {
+                    validateBearerToken(header, res, req);
                 } else {
                     res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                     return;
@@ -55,7 +53,7 @@ public class RequestValidationBeforeFilter implements Filter {
     }
 
     private void validateBasicAuth(String header, HttpServletResponse res) {
-        String base64Credentials = header.substring(BASIC_PREFIX.length()).trim();
+        String base64Credentials = header.substring(ApplicationConstants.BASIC_PREFIX.length()).trim();
         byte[] decoded;
 
         try {
@@ -77,8 +75,8 @@ public class RequestValidationBeforeFilter implements Filter {
         }
     }
 
-    private void validateBearerToken(String header, HttpServletResponse res) {
-        String jwtToken = header.substring(BEARER_PREFIX.length()).trim();
+    private void validateBearerToken(String header, HttpServletResponse res, HttpServletRequest request) {
+        String jwtToken = header.substring(ApplicationConstants.BEARER_PREFIX.length()).trim();
 
         if (!StringUtils.hasText(jwtToken)) {
             throw new BadCredentialsException("Invalid JWT token");

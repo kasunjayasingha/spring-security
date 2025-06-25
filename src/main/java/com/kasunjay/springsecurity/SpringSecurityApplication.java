@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 
 @SpringBootApplication
-@EnableWebSecurity(debug = true) // Enable debug mode for security configuration
+@EnableWebSecurity(debug = false) // Enable debug mode for security configuration need to be true
 public class SpringSecurityApplication {
 
     public static void main(String[] args) {
