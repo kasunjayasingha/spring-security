@@ -7,7 +7,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 
 @SpringBootApplication
 @EnableWebSecurity(debug = false) // Enable debug mode for security configuration need to be true
-@EnableMethodSecurity(jsr250Enabled = true,securedEnabled = true) // Enable method security annotations like @PreAuthorize, @Secured, etc.
 public class SpringSecurityApplication {
 
     public static void main(String[] args) {
