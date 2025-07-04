@@ -38,7 +38,7 @@ public class RequestValidationBeforeFilter implements Filter {
                 if (StringUtils.startsWithIgnoreCase(header, ApplicationConstants.BASIC_PREFIX)) {
                     validateBasicAuth(header, res);
                 } else if (StringUtils.startsWithIgnoreCase(header, ApplicationConstants.BEARER_PREFIX)) {
-                    validateBearerToken(header, res, req);
+//                    validateBearerToken(header, res, req);
                 } else {
                     res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                     return;
