@@ -29,27 +29,22 @@ public class ProjectSecurityConfig {
         return httpSecurity.build();
     }
 
-    @Bean
-    ClientRegistrationRepository clientRegistrationRepository() {
-        ClientRegistration github = githubClientRegistration();
-//        ClientRegistration facebook = facebookClientRegistration();
-        ClientRegistration google = googleClientRegistration();
-        return new InMemoryClientRegistrationRepository(github, google);
-    }
-
-    private ClientRegistration githubClientRegistration() {
-        return CommonOAuth2Provider.GITHUB.getBuilder("github").clientId("Ov23liF0GqebkV3q69NU")
-                .clientSecret("ce234f7edd8db05565c8a71c17db64bfa495f2b0").build();
-    }
-
-//    private ClientRegistration facebookClientRegistration() {
-//        return CommonOAuth2Provider.FACEBOOK.getBuilder("facebook").clientId("974042741122392")
-//                .clientSecret("36d48c25c1767d58b3101551513d7e1e").build();
+//    @Bean
+//    ClientRegistrationRepository clientRegistrationRepository() {
+//        ClientRegistration github = githubClientRegistration();
+//        ClientRegistration google = googleClientRegistration();
+//        return new InMemoryClientRegistrationRepository(github, google);
 //    }
-
-    private ClientRegistration googleClientRegistration() {
-        return CommonOAuth2Provider.GOOGLE.getBuilder("google").clientId("1025981105626-4kj87m4911kl4vq0c0l0rqd4vpgba788.apps.googleusercontent.com")
-                .clientSecret("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").build();
-    }
+//
+//    private ClientRegistration githubClientRegistration() {
+//        return CommonOAuth2Provider.GITHUB.getBuilder("github").clientId("Ov23liF0GqebkV3q69NU")
+//                .clientSecret("ce234f7edd8db05565c8a71c17db64bfa495f2b0").build();
+//    }
+//
+//
+//    private ClientRegistration googleClientRegistration() {
+//        return CommonOAuth2Provider.GOOGLE.getBuilder("google").clientId("1025981105626-4kj87m4911kl4vq0c0l0rqd4vpgba788.apps.googleusercontent.com")
+//                .clientSecret("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").build();
+//    }
 
 }

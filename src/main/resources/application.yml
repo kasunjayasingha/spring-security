@@ -21,6 +21,18 @@ spring:
       password: ${SPRING_SECURITY_USER_PASSWORD:123}
       roles: ${SPRING_SECURITY_USER_ROLES:USER,ADMIN}
 
+    oauth2:
+      client:
+        registration:
+            google:
+                client-id: ${GOOGLE_CLIENT_ID:1025981105626-4kj87m4911kl4vq0c0l0rqd4vpgba788.apps.googleusercontent.com}
+                client-secret: ${GOOGLE_CLIENT_SECRET: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}
+
+            github:
+                client-id: ${GITHUB_CLIENT_ID:Ov23liF0GqebkV3q69NU}
+                client-secret: ${GITHUB_CLIENT_SECRET:ce234f7edd8db05565c8a71c17db64bfa495f2b0}
+
+
 
 logging:
   level:
