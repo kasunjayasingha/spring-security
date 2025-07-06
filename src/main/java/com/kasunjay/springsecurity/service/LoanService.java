@@ -12,5 +12,5 @@ import java.util.List;
  */
 public interface LoanService {
 
-    List<Loans> getLoansDetails(long id);
+    List<Loans> getLoansDetails(String email);
 }

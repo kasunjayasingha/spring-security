@@ -24,7 +24,7 @@ public class LoansController {
 
     @GetMapping("/myLoans")
     @PreAuthorize("hasAuthority('VIEWLOANS') or hasRole('USER')")
-    public List<Loans> getLoansDetails (@RequestParam long id) {
-        return loanService.getLoansDetails(id);
+    public List<Loans> getLoansDetails (@RequestParam String email) {
+        return loanService.getLoansDetails(email);
     }
 }

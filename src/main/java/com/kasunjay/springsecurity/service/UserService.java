@@ -12,10 +12,5 @@ import org.springframework.http.ResponseEntity;
  * @Created on: 6/5/2025 at 8:42 PM
  */
 public interface UserService {
-
-    ResponseEntity<String> registerUser(Customer customer);
-
     Customer getUserDetails(String username);
-
-    ResponseEntity<LoginResponseDTO> apiLogin(LoginRequestDTO loginRequest);
 }

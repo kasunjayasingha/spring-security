@@ -12,5 +12,5 @@ import java.util.List;
  */
 public interface BalanceService {
 
-    List<AccountTransactions> getBalanceDetails(long id);
+    List<AccountTransactions> getBalanceDetails(String email);
 }

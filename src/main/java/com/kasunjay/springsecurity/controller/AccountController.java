@@ -20,7 +20,7 @@ public class AccountController {
     private final AccountService accountService;
 
     @GetMapping("/myAccount")
-    public Accounts getAccountDetails (@RequestParam long id) {
-        return accountService.getAccountDetails(id);
+    public Accounts getAccountDetails (@RequestParam String email) {
+        return accountService.getAccountDetails(email);
     }
 }

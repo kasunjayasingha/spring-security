@@ -1,6 +1,8 @@
 package com.kasunjay.springsecurity.service.impl;
 
+import com.kasunjay.springsecurity.model.Customer;
 import com.kasunjay.springsecurity.model.Loans;
+import com.kasunjay.springsecurity.repository.CustomerRepository;
 import com.kasunjay.springsecurity.repository.LoanRepository;
 import com.kasunjay.springsecurity.service.LoanService;
 import lombok.RequiredArgsConstructor;
@@ -8,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @Author: kasun_t
@@ -21,14 +24,15 @@ import java.util.List;
 public class LoanServiceImpl implements LoanService {
 
     private final LoanRepository loanRepository;
+    private final CustomerRepository customerRepository;
 
     @Override
-    public List<Loans> getLoansDetails(long id) {
-        List<Loans> loans = loanRepository.findByCustomerIdOrderByStartDtDesc(id);
-        if (loans != null) {
-            return loans;
-        } else {
+    public List<Loans> getLoansDetails(String email) {
+        Optional<Customer> customerOptional = customerRepository.findByEmail(email);
+        if (customerOptional.isEmpty()) {
+            log.warn("Customer with email {} not found", email);
             return null;
         }
+        return loanRepository.findByCustomerIdOrderByStartDtDesc(customerOptional.get().getId());
     }
 }

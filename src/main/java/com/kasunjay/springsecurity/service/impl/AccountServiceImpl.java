@@ -1,11 +1,15 @@
 package com.kasunjay.springsecurity.service.impl;
 
 import com.kasunjay.springsecurity.model.Accounts;
+import com.kasunjay.springsecurity.model.Customer;
 import com.kasunjay.springsecurity.repository.AccountsRepository;
+import com.kasunjay.springsecurity.repository.CustomerRepository;
 import com.kasunjay.springsecurity.service.AccountService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 /**
  * @Author: kasun_t
@@ -19,13 +23,15 @@ import org.springframework.stereotype.Service;
 public class AccountServiceImpl implements AccountService {
 
     private final AccountsRepository accountsRepository;
+    private final CustomerRepository customerRepository;
+
     @Override
-    public Accounts getAccountDetails(long id) {
-        Accounts accounts = accountsRepository.findByCustomerId(id);
-        if (accounts != null) {
-            return accounts;
-        } else {
+    public Accounts getAccountDetails(String email) {
+        Optional<Customer> customerOptional = customerRepository.findByEmail(email);
+        if (customerOptional.isEmpty()) {
+            log.warn("Customer with email {} not found", email);
             return null;
         }
+        return accountsRepository.findByCustomerId(customerOptional.get().getId());
     }
 }

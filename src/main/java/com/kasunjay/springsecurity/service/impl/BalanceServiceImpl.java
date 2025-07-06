@@ -1,13 +1,16 @@
 package com.kasunjay.springsecurity.service.impl;
 
 import com.kasunjay.springsecurity.model.AccountTransactions;
+import com.kasunjay.springsecurity.model.Customer;
 import com.kasunjay.springsecurity.repository.AccountTransactionsRepository;
+import com.kasunjay.springsecurity.repository.CustomerRepository;
 import com.kasunjay.springsecurity.service.BalanceService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @Author: kasun_t
@@ -21,16 +24,17 @@ import java.util.List;
 public class BalanceServiceImpl implements BalanceService {
 
     private final AccountTransactionsRepository accountTransactionsRepository;
+    private final CustomerRepository customerRepository;
 
     @Override
-    public List<AccountTransactions> getBalanceDetails(long id) {
+    public List<AccountTransactions> getBalanceDetails(String email) {
 
-        List<AccountTransactions> accountTransactions = accountTransactionsRepository.
-                findByCustomerIdOrderByTransactionDtDesc(id);
-        if (accountTransactions != null) {
-            return accountTransactions;
-        } else {
+        Optional<Customer> customerOptional = customerRepository.findByEmail(email);
+        if (customerOptional.isEmpty()) {
+            log.warn("Customer with email {} not found", email);
             return null;
         }
+        return accountTransactionsRepository.
+                findByCustomerIdOrderByTransactionDtDesc(customerOptional.get().getId());
     }
 }

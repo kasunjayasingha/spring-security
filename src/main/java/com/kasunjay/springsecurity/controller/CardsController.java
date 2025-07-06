@@ -22,7 +22,7 @@ public class CardsController {
     private final CardsService cardsService;
 
     @GetMapping("/myCards")
-    public List<Cards> getCardsDetails (@RequestParam long id) {
-        return cardsService.getCardsDetails(id);
+    public List<Cards> getCardsDetails (@RequestParam String email) {
+        return cardsService.getCardsDetails(email);
     }
 }

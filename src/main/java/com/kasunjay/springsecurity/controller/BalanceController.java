@@ -22,7 +22,7 @@ public class BalanceController {
     private final BalanceService balanceService;
 
     @GetMapping("/myBalance")
-    public List<AccountTransactions> getBalanceDetails (@RequestParam long id) {
-        return balanceService.getBalanceDetails(id);
+    public List<AccountTransactions> getBalanceDetails (@RequestParam String email) {
+        return balanceService.getBalanceDetails(email);
     }
 }

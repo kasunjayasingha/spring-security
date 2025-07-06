@@ -12,5 +12,5 @@ import java.util.List;
  */
 public interface CardsService {
 
-    List<Cards> getCardsDetails(long id);
+    List<Cards> getCardsDetails(String email);
 }

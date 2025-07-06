@@ -10,5 +10,5 @@ import com.kasunjay.springsecurity.model.Accounts;
  */
 public interface AccountService {
 
-    Accounts getAccountDetails(long id);
+    Accounts getAccountDetails(String email);
 }

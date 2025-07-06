@@ -24,11 +24,6 @@ public class UserController {
 
     private final UserService userService;
 
-    @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@RequestBody Customer customer) {
-        return userService.registerUser(customer);
-    }
-
     @RequestMapping("/user")
     public Customer getUserDetailsAfterLogin(Authentication authentication) {
         if (authentication != null && authentication.isAuthenticated()) {
@@ -38,10 +33,5 @@ public class UserController {
             return null; // or throw an exception
         }
 
-    }
-
-    @PostMapping("/apiLogin")
-    public ResponseEntity<LoginResponseDTO> apiLogin (@RequestBody LoginRequestDTO loginRequest) {
-        return userService.apiLogin(loginRequest);
     }
 }
