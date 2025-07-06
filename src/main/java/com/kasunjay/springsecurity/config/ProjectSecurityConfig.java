@@ -40,14 +40,14 @@ public class ProjectSecurityConfig {
 
     private final Environment environment;
 
-    @Value("${spring.security.oauth2.resourceserver.opaquetoken.introspection-uri}")
-    String introspectionUri;
-
-    @Value("${spring.security.oauth2.resourceserver.opaquetoken.client-id}")
-    String clientId;
-
-    @Value("${spring.security.oauth2.resourceserver.opaquetoken.client-secret}")
-    String clientSecret;
+//    @Value("${spring.security.oauth2.resourceserver.opaquetoken.introspection-uri}")
+//    String introspectionUri;
+//
+//    @Value("${spring.security.oauth2.resourceserver.opaquetoken.client-id}")
+//    String clientId;
+//
+//    @Value("${spring.security.oauth2.resourceserver.opaquetoken.client-secret}")
+//    String clientSecret;
 
     @Bean
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
@@ -107,10 +107,10 @@ public class ProjectSecurityConfig {
 //                        .requestMatchers("/myCards").hasRole("USER")
                         .requestMatchers("/user").authenticated()
                         .requestMatchers("/notices", "/contact", "/error", "/register").permitAll());
-//        http.oauth2ResourceServer(rsc -> rsc.jwt(jwtConfigurer ->
-//                jwtConfigurer.jwtAuthenticationConverter(jwtAuthenticationConverter)));
-        http.oauth2ResourceServer(rsc -> rsc.opaqueToken(otc -> otc.authenticationConverter(new KeycloakOpaqueRoleConverter())
-                .introspectionUri(this.introspectionUri).introspectionClientCredentials(this.clientId,this.clientSecret)));
+        http.oauth2ResourceServer(rsc -> rsc.jwt(jwtConfigurer ->
+                jwtConfigurer.jwtAuthenticationConverter(jwtAuthenticationConverter))); // Configure OAuth2 Resource Server to use JWT tokens with custom role converter
+//        http.oauth2ResourceServer(rsc -> rsc.opaqueToken(otc -> otc.authenticationConverter(new KeycloakOpaqueRoleConverter())
+//                .introspectionUri(this.introspectionUri).introspectionClientCredentials(this.clientId,this.clientSecret))); // Configure OAuth2 Resource Server to use opaque tokens with custom role converter
         http.exceptionHandling(ehc -> ehc.accessDeniedHandler(new CustomAccessDeniedHandler()));
         return http.build();
     }
