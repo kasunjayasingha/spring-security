@@ -22,8 +22,10 @@ spring:
   security:
     oauth2:
       resourceserver:
-        jwt:
-          jwk-set-uri: ${JWK_SET_URI:http://localhost:8180/realms/spring-security-dev/protocol/openid-connect/certs}
+        opaquetoken:
+          introspection-uri: ${INTROSPECTION_URI:http://localhost:8180/realms/spring-security-dev/protocol/openid-connect/token/introspect}
+          client-id: ${INTROSPECTION_CLIENT_ID:spring-security-introspect}
+          client-secret: ${INTROSPECTION_CLIENT_SECRET:RxlMbOuLEOrhlraVpAZTR8Yh9RlCyWJu}
 
 server:
   servlet:
