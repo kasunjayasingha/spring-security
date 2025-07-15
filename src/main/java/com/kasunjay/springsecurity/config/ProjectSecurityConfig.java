@@ -1,22 +1,16 @@
 package com.kasunjay.springsecurity.config;
 
 import com.kasunjay.springsecurity.exception.CustomAccessDeniedHandler;
-import com.kasunjay.springsecurity.exception.CustomBasicAuthenticationEntryPoint;
 import com.kasunjay.springsecurity.filter.CsrfCookieFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
-import org.springframework.security.authentication.password.CompromisedPasswordChecker;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.password.HaveIBeenPwnedRestApiPasswordChecker;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
@@ -55,7 +49,7 @@ public class ProjectSecurityConfig {
         CsrfTokenRequestAttributeHandler csrfTokenRequestAttributeHandler = new CsrfTokenRequestAttributeHandler();
 
         JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter(); // Create a JwtAuthenticationConverter to convert JWT tokens to Authentication objects
-        jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(new KeycloakRoleConverter()); // Set a custom converter to extract roles from the JWT token
+        jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(new RoleConverter()); // Set a custom converter to extract roles from the JWT token
 
         if (environment.matchesProfiles("prod")) {
             // Only force HTTPS in production environment
@@ -97,14 +91,14 @@ public class ProjectSecurityConfig {
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
                 .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
                 .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/myAccount").hasAuthority("VIEWACCOUNT")
-                        .requestMatchers("/myBalance").hasAnyAuthority("VIEWBALANCE", "VIEWACCOUNT")
+//                        .requestMatchers("/myAccount").hasAuthority("VIEWACCOUNT")
+//                        .requestMatchers("/myBalance").hasAnyAuthority("VIEWBALANCE", "VIEWACCOUNT")
+//                        .requestMatchers("/myLoans").authenticated()
+//                        .requestMatchers("/myCards").hasAuthority("VIEWCARDS")
+                        .requestMatchers("/myAccount").hasRole("USER")
+                        .requestMatchers("/myBalance").hasAnyRole("USER", "ADMIN")
                         .requestMatchers("/myLoans").authenticated()
-                        .requestMatchers("/myCards").hasAuthority("VIEWCARDS")
-//                        .requestMatchers("/myAccount").hasRole("USER")
-//                        .requestMatchers("/myBalance").hasAnyRole("USER", "ADMIN")
-//                        .requestMatchers("/myLoans").hasRole("USER")
-//                        .requestMatchers("/myCards").hasRole("USER")
+                        .requestMatchers("/myCards").hasRole("USER")
                         .requestMatchers("/user").authenticated()
                         .requestMatchers("/notices", "/contact", "/error", "/register").permitAll());
         http.oauth2ResourceServer(rsc -> rsc.jwt(jwtConfigurer ->

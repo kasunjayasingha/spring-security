@@ -16,27 +16,16 @@ import java.util.stream.Collectors;
  * @Class: KeycloakRoleConverter
  * @Created on: 7/6/2025 at 10:33 AM
  */
-public class KeycloakRoleConverter implements Converter<Jwt, Collection<GrantedAuthority>> {
+public class RoleConverter implements Converter<Jwt, Collection<GrantedAuthority>> {
     @Override
     public Collection<GrantedAuthority> convert(Jwt source) {
-        Object realmAccessObj = source.getClaims().get("realm_access");
 
-        // Check if realmAccessObj is an instance of Map
-        if (!(realmAccessObj instanceof Map<?, ?> realmAccessMap)) {
+        ArrayList<String> roles = (ArrayList<String>) source.getClaims().get("roles");
+        if (roles == null || roles.isEmpty()) {
             return new ArrayList<>();
         }
-
-        // Check if roles key exists and is a List
-        Object rolesObj = realmAccessMap.get("roles");
-        if (!(rolesObj instanceof List<?> rolesList)) {
-            return new ArrayList<>();
-        }
-
-        // Convert roles to GrantedAuthority
-        return rolesList.stream()
-                .filter(role -> role instanceof String)
-                .map(role -> "ROLE_" + role)
-                .map(role -> new SimpleGrantedAuthority((String) role))
+        return roles.stream().map(roleName -> "ROLE_" + roleName)
+                .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
     }
 }
