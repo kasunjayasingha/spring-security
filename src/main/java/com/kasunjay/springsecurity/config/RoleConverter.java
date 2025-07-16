@@ -20,11 +20,11 @@ public class RoleConverter implements Converter<Jwt, Collection<GrantedAuthority
     @Override
     public Collection<GrantedAuthority> convert(Jwt source) {
 
-        ArrayList<String> roles = (ArrayList<String>) source.getClaims().get("roles");
+        ArrayList<String> roles = (ArrayList<String>) source.getClaims().get("authority");
         if (roles == null || roles.isEmpty()) {
             return new ArrayList<>();
         }
-        return roles.stream().map(roleName -> "ROLE_" + roleName)
+        return roles.stream()
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
     }
